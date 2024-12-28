@@ -6,6 +6,8 @@
 #include <casadi/casadi.hpp>
 #include <fstream>
 #include <yaml-cpp/yaml.h>
+#include <math.h>
+#include <algorithm>
 
 using namespace casadi;
 
@@ -34,9 +36,9 @@ private:
     double g;
 
 public:
-    void fillMatrix(DM &i);
     void readfile(std::string file);
     quad(std::string path_file);
+    Function dynamics();
 };
 
 #endif

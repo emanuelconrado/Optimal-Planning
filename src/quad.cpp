@@ -36,73 +36,85 @@ void quad::readfile(std::string file){
         this->l = dado["arm_length"].as<double>();
     }else std::cout << "No arm_lenth specified in file" << std::endl;
 
-    // if(dado["inertia"]){
-    //     i = DM(dado["inertia"].as<double>());
-    // }
+    if(dado["inertia"]){
+        auto inertia = dado["inertia"];
+        for(std::size_t i = 0; i < inertia.size(); i++){
+            for(std::size_t j = 0; j < inertia[i].size(); j++){
+                this->i(i,j) = inertia[i][j].as<double>();
+            }
+        }
 
-    std::cout << this->i(1,1) << std::endl;
+        this->i_inv = inv(this->i);
+    }else std::cout << "No inertia specified in file" << std::endl;
 
-    std::cout << "Massa: " << this->m << std::endl;
+    if(dado["TWR_max"]){
+        this->t_max = dado["TWR_max"].as<double>() * 9.81 * (this->m/4);
+    }else if(dado["thrust_max"]){
+        this->t_max = dado["thrust_max"].as<double>();
+    }else std::cout << "No max thrust specified in file" << std::endl;
 
-    // if 'inertia' in quad:
-    //   self.I = DM(quad['inertia'])
-    //   self.I_inv = inv(self.I)
-    // else:
-    //   print("No inertia specified in " + filename)
+    if(dado["TWR_min"]){
+        this->t_max = dado["TWR_min"].as<double>() * 9.81 * (this->m/4);
+    }else if(dado["thrust_min"]){
+        this->t_max = dado["thrust_min"].as<double>();
+    }else std::cout << "No min thrust specified in file" << std::endl;
 
 
-    // if 'TWR_max' in quad:
-    //   self.T_max = quad['TWR_max'] * 9.81 * self.m / 4
-    // elif 'thrust_max' in quad:
-    //   self.T_max = quad['thrust_max']
-    // else:
-    //   print("No max thrust specified in " + filename)
+    if(dado["omega_max_xy"]){
+        this->omega_max_xy = dado["omega_max_xy"].as<double>();
+    }else std::cout << "No max omega_xy specified in file" << std::endl;
 
-    // if 'TWR_min' in quad:
-    //   self.T_min = quad['TWR_min'] * 9.81 * self.m / 4
-    // elif 'thrust_min' in quad:
-    //   self.T_min = quad['thrust_min']
-    // else:
-    //   print("No min thrust specified in " + filename)
+    if(dado["omega_max_z"]){
+        this->omega_max_z = dado["omega_max_z"].as<double>();
+    }else std::cout << "No max omega_z specified in file" << std::endl;
 
-    // if 'omega_max_xy' in quad:
-    //   self.omega_max_xy = quad['omega_max_xy']
-    // else:
-    //   print("No max omega_xy specified in " + filename)
+    if(dado["torque_coeff"]){
+        this->ctau = dado["torque_coeff"].as<double>();
+    }else std::cout << "No thrust to drag coefficient specified in file" << std::endl;
 
-    // if 'omega_max_z' in quad:
-    //   self.omega_max_z = quad['omega_max_z']
-    // else:
-    //   print("No max omega_z specified in " + filename)
+    if(dado["v_max"]){
+        this->v_max = dado["v_max"].as<double>();
+        double a_max = 4 * (this->t_max / this->m);
+        double a_hmax = sqrt(a_max*a_max - this->g*this->g);
+        this->cd = a_hmax/this->v_max;
+    }
 
-    // if 'torque_coeff' in quad:
-    //   self.ctau = quad['torque_coeff']
-    // else:
-    //   print("No thrust to drag coefficient specified in " + filename)
+    if(dado["drag_coeff"]){
+        this->cd = dado["drag_coeff"].as<double>();
+    }
 
-    // if 'v_max' in quad:
-    //   self.v_max = quad['v_max']
-    //   a_max = 4 * self.T_max / self.m
-    //   a_hmax = sqrt(a_max**2 - self.g**2)
-    //   self.cd = a_hmax / self.v_max
-    // if 'drag_coeff' in quad:
-    //   self.cd = quad['drag_coeff']
+    if(dado["rampup_dist"]){
+        this->rampup_dist = dado["rampup_dist"].as<double>();
+    }
 
-    // if 'rampup_dist' in quad:
-    //   self.rampup_dist = quad['rampup_dist']
-    //   if 'TWR_ramp_start' in quad and 'omega_ramp_start' in quad:
-    //     self.T_ramp_start = min(quad['TWR_ramp_start'] * 9.81 * self.m / 4, self.T_max)
-    //     self.omega_ramp_start = min(quad['omega_ramp_start'], self.omega_max_xy)
-    //   else:
-    //     print("No TWR_ramp_start or omega_ramp_start specified. Disabling rampup")
-    //     rampup_dist = 0
+    if(dado["TWR_ramp_start"] && dado["omega_ramp_start"]){
+        this->t_ramp_start = std::min(dado["TWR_ramp_start"].as<double>() * 9.81 * (this->m/4), this->t_max);
+        this->omega_ramp_start = std::min((dado["omega_ramp_start"].as<double>()), this->omega_max_xy);
+    }else{
+        std::cout << "No TWR_ramp_start or omega_ramp_start specified. Disabling rampup" << std::endl;
+        this->rampup_dist = 0;
+    }
 
-    // if (config["massa"]) {
-    //     massa = config["massa"].as<double>();
-    // }
+    std::cout << this->rampup_dist << std::endl;
 }
 
-void quad::fillMatrix(DM &i){
+Function quad::dynamics(){
+    MX p = MX::sym("p", 3);
+    MX v = MX::sym("v", 3);
+    MX q = MX::sym("q", 4);
+    MX w = MX::sym("w", 3);
+    MX T = MX::sym("thrust", 4);
 
+    MX x = vertcat(p, v, q, w);
+    MX u = T;
+
+    DM g = DM({0, 0, -this->g});
+    std::cout << g << std::endl;
+
+    //Implementar a função rotate_quat
+
+    Function f;
+
+    return f;
 }
 
