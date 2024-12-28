@@ -193,6 +193,30 @@ src/quad.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/quad.cpp.s
 .PHONY : src/quad.cpp.s
 
+src/quaternion.o: src/quaternion.cpp.o
+.PHONY : src/quaternion.o
+
+# target to build an object file
+src/quaternion.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/quaternion.cpp.o
+.PHONY : src/quaternion.cpp.o
+
+src/quaternion.i: src/quaternion.cpp.i
+.PHONY : src/quaternion.i
+
+# target to preprocess a source file
+src/quaternion.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/quaternion.cpp.i
+.PHONY : src/quaternion.cpp.i
+
+src/quaternion.s: src/quaternion.cpp.s
+.PHONY : src/quaternion.s
+
+# target to generate assembly for a file
+src/quaternion.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/quaternion.cpp.s
+.PHONY : src/quaternion.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -209,6 +233,9 @@ help:
 	@echo "... src/quad.o"
 	@echo "... src/quad.i"
 	@echo "... src/quad.s"
+	@echo "... src/quaternion.o"
+	@echo "... src/quaternion.i"
+	@echo "... src/quaternion.s"
 .PHONY : help
 
 

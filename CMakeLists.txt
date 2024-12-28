@@ -112,7 +112,7 @@ add_library(quad src/quad.cpp)
 # add executable files for test
 
 #teste
-add_executable(main src/main.cpp src/quad.cpp)
+add_executable(main src/main.cpp src/quad.cpp src/quaternion.cpp)
 target_link_libraries(main yaml-cpp)
 target_link_libraries(main ${CASADI_LIBRARIES})
 

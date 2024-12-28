@@ -8,6 +8,7 @@
 #include <yaml-cpp/yaml.h>
 #include <math.h>
 #include <algorithm>
+#include "quaternion.hpp"
 
 using namespace casadi;
 

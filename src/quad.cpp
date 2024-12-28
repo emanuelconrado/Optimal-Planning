@@ -94,8 +94,6 @@ void quad::readfile(std::string file){
         std::cout << "No TWR_ramp_start or omega_ramp_start specified. Disabling rampup" << std::endl;
         this->rampup_dist = 0;
     }
-
-    std::cout << this->rampup_dist << std::endl;
 }
 
 Function quad::dynamics(){
@@ -109,12 +107,22 @@ Function quad::dynamics(){
     MX u = T;
 
     DM g = DM({0, 0, -this->g});
-    std::cout << g << std::endl;
 
-    //Implementar a função rotate_quat
+    MX x_dot = vertcat(v, 
+    rotate_quat(q, vertcat(0, 0, (T(0) + T(1) + T(2) + T(3))/this->m)) + g - v * this->cd,
+    0.5*quat_mult(q, vertcat(0,w)),
+    mtimes(this->i_inv, vertcat(
+        this->l*(T(0) - T(1) - T(2) + T(3)),
+        this->l*(-T(0) - T(1) + T(2) + T(3)),
+        this->ctau*(T(0) - T(1) + T(2) - T(3))
+    ) - cross(w, mtimes(this->i,w)))
+    );
 
-    Function f;
+    std::vector<MX> inputs = {x, u};
+    std::vector<MX> outputs = {x_dot};
 
-    return f;
+    Function fx = Function("f",  inputs, outputs);
+
+    return fx;
 }
 
