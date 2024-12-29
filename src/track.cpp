@@ -8,7 +8,7 @@ track::track(std::string path_file){
 
     if(file.is_open()){
         readfile(path_file);
-    }
+    }else std::cout << "Não abriu" << std::endl;
 }
 
 void track::readfile(std::string file){

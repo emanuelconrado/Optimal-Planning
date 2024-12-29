@@ -9,6 +9,7 @@
 #include <math.h>
 #include <algorithm>
 #include "quaternion.hpp"
+#include <optional>
 
 using namespace casadi;
 
@@ -32,7 +33,7 @@ private:
     double omega_max_xy;
     double omega_max_z;
 
-    double v_max;
+    std::optional<double> v_max = std::nullopt;
     double cd;
     double g;
 

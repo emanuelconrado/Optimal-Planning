@@ -142,6 +142,30 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+src/integrator.o: src/integrator.cpp.o
+.PHONY : src/integrator.o
+
+# target to build an object file
+src/integrator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/integrator.cpp.o
+.PHONY : src/integrator.cpp.o
+
+src/integrator.i: src/integrator.cpp.i
+.PHONY : src/integrator.i
+
+# target to preprocess a source file
+src/integrator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/integrator.cpp.i
+.PHONY : src/integrator.cpp.i
+
+src/integrator.s: src/integrator.cpp.s
+.PHONY : src/integrator.s
+
+# target to generate assembly for a file
+src/integrator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/integrator.cpp.s
+.PHONY : src/integrator.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -251,6 +275,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... main"
 	@echo "... quad"
+	@echo "... src/integrator.o"
+	@echo "... src/integrator.i"
+	@echo "... src/integrator.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

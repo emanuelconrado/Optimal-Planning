@@ -13,7 +13,6 @@ quad::quad(std::string path_file)
     this->t_ramp_start = 5;
     this->omega_ramp_start = 3;
 
-    this->v_max = 0.0;
     this->cd = 0.0;
     this->g = 9.801;
 
@@ -73,11 +72,17 @@ void quad::readfile(std::string file){
     }else std::cout << "No thrust to drag coefficient specified in file" << std::endl;
 
     if(dado["v_max"]){
+        if(!this->v_max){
+            this->v_max = double();
+        }
+        
         this->v_max = dado["v_max"].as<double>();
         double a_max = 4 * (this->t_max / this->m);
         double a_hmax = sqrt(a_max*a_max - this->g*this->g);
-        this->cd = a_hmax/this->v_max;
+        this->cd = a_hmax/(*(this->v_max));
     }
+
+
 
     if(dado["drag_coeff"]){
         this->cd = dado["drag_coeff"].as<double>();
@@ -118,10 +123,7 @@ Function quad::dynamics(){
     ) - cross(w, mtimes(this->i,w)))
     );
 
-    std::vector<MX> inputs = {x, u};
-    std::vector<MX> outputs = {x_dot};
-
-    Function fx = Function("f",  inputs, outputs);
+    Function fx = Function("f", {x, u}, {x_dot}, {"x", "u"}, {"x_dot"});
 
     return fx;
 }
