@@ -1,6 +1,6 @@
 #include "../include/quad.hpp"
 
-quad::quad(std::string path_file)
+Quad::Quad(std::string path_file)
 {
     this->m = 1;
     this->l = 1;
@@ -24,7 +24,7 @@ quad::quad(std::string path_file)
     
 }
 
-void quad::readfile(std::string file){
+void Quad::readfile(std::string file){
     YAML::Node dado = YAML::LoadFile(file);
 
     if (dado["mass"]){
@@ -101,7 +101,7 @@ void quad::readfile(std::string file){
     }
 }
 
-Function quad::dynamics(){
+Function Quad::dynamics(){
     MX p = MX::sym("p", 3);
     MX v = MX::sym("v", 3);
     MX q = MX::sym("q", 4);

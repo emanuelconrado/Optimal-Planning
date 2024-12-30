@@ -1,6 +1,6 @@
 #include "../include/track.hpp"
 
-track::track(std::string path_file){
+Track::Track(std::string path_file){
     this->gates = {};
     this->ring = false;
 
@@ -11,7 +11,7 @@ track::track(std::string path_file){
     }else std::cout << "Não abriu" << std::endl;
 }
 
-void track::readfile(std::string file){
+void Track::readfile(std::string file){
     YAML::Node dado = YAML::LoadFile(file);
     YAML::Node initial;
 
@@ -39,53 +39,37 @@ void track::readfile(std::string file){
 
     if(initial["position"]){
         auto position = initial["position"];
-        if(!this->init_pos){
-            this->init_pos = std::vector<double>();
-        }
-
-        this->init_pos->reserve(position.size());
+        this->init_pos.reserve(position.size());
 
         for(std::size_t i = 0; i < position.size(); i++){
-            this->init_pos->push_back(position[i].as<double>());
+            this->init_pos.push_back(position[i].as<double>());
         }
     }
 
     if(initial["attitude"]){
         auto attitude = initial["attitude"];
-        if(!this->init_att){
-            this->init_att = std::vector<double>();
-        }
-
-        this->init_att->reserve(attitude.size());
+        this->init_att.reserve(attitude.size());
 
         for(std::size_t i = 0; i < attitude.size(); i++){
-            this->init_att->push_back(attitude[i].as<double>());
+            this->init_att.push_back(attitude[i].as<double>());
         }
     }
 
     if(initial["velocity"]){
         auto velocity = initial["velocity"];
-        if(!this->init_vel){
-            this->init_vel = std::vector<double>();
-        }
-
-        this->init_vel->reserve(velocity.size());
+        this->init_vel.reserve(velocity.size());
 
         for(std::size_t i = 0; i < velocity.size(); i++){
-            this->init_vel->push_back(velocity[i].as<double>());
+            this->init_vel.push_back(velocity[i].as<double>());
         }
     }
 
     if(initial["omega"]){
         auto omega = initial["omega"];
-        if(!this->init_omega){
-            this->init_omega = std::vector<double>();
-        }
-
-        this->init_omega->reserve(omega.size());
+        this->init_omega.reserve(omega.size());
 
         for(std::size_t i = 0; i < omega.size(); i++){
-            this->init_omega->push_back(omega[i].as<double>());
+            this->init_omega.push_back(omega[i].as<double>());
         }
     }
 
@@ -94,53 +78,37 @@ void track::readfile(std::string file){
 
         if(end["position"]){
             auto position = end["position"];
-            if(!this->end_pos){
-            this->end_pos = std::vector<double>();
-            }
-
-            this->end_pos->reserve(position.size());
+            this->end_pos.reserve(position.size());
 
             for(std::size_t i = 0; i < position.size(); i++){
-                this->end_pos->push_back(position[i].as<double>());
+                this->end_pos.push_back(position[i].as<double>());
             }
         }
 
         if(end["attitude"]){
             auto attitude = end["attitude"];
-            if(!this->end_att){
-            this->end_att = std::vector<double>();
-            }
-
-            this->end_att->reserve(attitude.size());
+            this->end_att.reserve(attitude.size());
 
             for(std::size_t i = 0; i < attitude.size(); i++){
-                this->end_att->push_back(attitude[i].as<double>());
+                this->end_att.push_back(attitude[i].as<double>());
             }
         }
 
         if(end["velocity"]){
             auto velocity = end["velocity"];
-            if(!this->end_vel){
-            this->end_vel = std::vector<double>();
-            }
-
-            this->end_vel->reserve(velocity.size());
+            this->end_vel.reserve(velocity.size());
 
             for(std::size_t i = 0; i < velocity.size(); i++){
-                this->end_vel->push_back(velocity[i].as<double>());
+                this->end_vel.push_back(velocity[i].as<double>());
             }
         }
 
         if(end["omega"]){
             auto omega = end["omega"];
-            if(!this->end_omega){
-            this->end_omega = std::vector<double>();
-            }
-
-            this->end_omega->reserve(omega.size());
+            this->end_omega.reserve(omega.size());
 
             for(std::size_t i = 0; i < omega.size(); i++){
-                this->end_omega->push_back(omega[i].as<double>());
+                this->end_omega.push_back(omega[i].as<double>());
             }
         }
     }
@@ -150,4 +118,4 @@ void track::readfile(std::string file){
     }
 }
 
-track::~track(){}
+Track::~Track(){}

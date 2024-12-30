@@ -14,7 +14,7 @@
 using namespace casadi;
 
 
-class quad
+class Quad
 {
 private:
     double m;
@@ -39,7 +39,7 @@ private:
 
 public:
     void readfile(std::string file);
-    quad(std::string path_file);
+    Quad(std::string path_file);
     Function dynamics();
 };
 

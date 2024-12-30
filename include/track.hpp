@@ -7,22 +7,22 @@
 #include <string>
 #include <iostream>
 
-class track
+class Track
 {
 private:
-    std::optional <std::vector<double>> init_pos = std::nullopt;
-    std::optional <std::vector<double>> init_att = std::nullopt;
-    std::optional <std::vector<double>> init_vel = std::nullopt;
-    std::optional <std::vector<double>> init_omega = std::nullopt;
-    std::optional <std::vector<double>> end_pos = std::nullopt;
-    std::optional <std::vector<double>> end_att = std::nullopt;
-    std::optional <std::vector<double>> end_vel = std::nullopt;
-    std::optional <std::vector<double>> end_omega = std::nullopt;
+public:
+    std::vector<double> init_pos = {};
+    std::vector<double> init_att = {};
+    std::vector<double> init_vel = {};
+    std::vector<double> init_omega = {};
+    std::vector<double> end_pos = {};
+    std::vector<double> end_att = {};
+    std::vector<double> end_vel = {};
+    std::vector<double> end_omega = {};
     std::vector<std::vector<double>> gates;
     bool ring;
-public:
-    track(std::string path_file);
-    ~track();
+    Track(std::string path_file);
+    ~Track();
     void readfile(std::string file);
 };
 
