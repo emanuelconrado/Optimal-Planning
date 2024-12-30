@@ -6,8 +6,8 @@ Planner::Planner(Quad &quad, Track &track, Function (*func)(Function), YAML::Nod
     if(!track.end_pos.empty()){
         if(track.gates.size() > 0){
             DM end_pos = DM(track.end_pos);
-            this->wp = horzcat(this->wp, DM(track.end_pos));
-        }else this->wp = DM(track.end_pos);
+            this->wp = horzcat(this->wp, DM(track.end_pos)); //Numero de gates + end_pos
+        }else this->wp = DM(track.end_pos); 
     }
 
     if(!track.init_pos.empty()){
@@ -54,12 +54,58 @@ Planner::Planner(Quad &quad, Track &track, Function (*func)(Function), YAML::Nod
     div_scalar(dist.back()(0).scalar(), i_switch);
     to_int(i_switch);
 
-    std::cout << i_switch << std::endl;
-    std::cout << dist << std::endl;
+
+
+    this->x = {};
+    this->xg = {};
+    this->g = {};
+    this->lb = {};
+    this->ub = {};
+    this->J = {};
+
+
+    if(options["solver_options"]){
+        this->solver_options = options["solver_options"];
+    }else{
+        solver_options= {};
+        this->solver_options["ipopt"]["max_inter"] = 10000;
+    }
+
+    if(options["solver_type"]){
+        this->solver_type = options["solver_type"];
+    }else this->solver_type = "ipopt";
+
+    
+    this->iteration_plot = {};
+
+    if(options["t_guess"]){
+        this->t_guess = options["t_guess"];
+        this->vel_guess = dist.back()(0).scalar() / t_guess.as<double>();
+    }else if(options["vel_guess"]){
+        this->vel_guess = options["vel_guess"].as<double>();
+        this->t_guess["t_guess"] = dist.back()(0).scalar()/ this->vel_guess;
+    }else{
+        this->vel_guess = 2.5;
+        this->t_guess["t_guess"] = dist.back()(0).scalar() / this->vel_guess;
+    }
+
+    if(options["legacy_init"]){
+        if(options["legacy_init"].as<bool>()){
+            this->i_switch = generate_range(this->NPW, this->N + 1, this->NPW);
+        }
+    }
 }
 
 Planner::~Planner(){
 
+}
+
+std::vector<DM> Planner::generate_range(int start, int end, int step) {
+    std::vector<DM> range;
+    for (int i = start; i <= end; i += step) {
+        range.push_back(i);
+    }
+    return range;
 }
 
 std::vector<DM> Planner::mult_scalar(const int &N, std::vector<DM> dist){

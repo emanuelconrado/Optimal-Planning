@@ -1,3 +1,4 @@
 tolerance: 0.3
 nodes_per_gate: 40
 vel_guess: 3.0
+legacy_init: true
